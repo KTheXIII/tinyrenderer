@@ -14,6 +14,8 @@
 
 namespace tiny {
 
+    // TODO: Write operator overload for the vec data types
+
     template <typename T>
     struct vec2 {
         union {
