@@ -75,9 +75,9 @@ namespace tiny {
 
         friend std::ostream &operator<<(std::ostream &os, color const& color) {
             os << "tiny::color { ";
-            os << std::to_string(color.m_red) << ", ";
+            os << std::to_string(color.m_red)   << ", ";
             os << std::to_string(color.m_green) << ", ";
-            os << std::to_string(color.m_blue) << ", ";
+            os << std::to_string(color.m_blue)  << ", ";
             os << std::to_string(color.m_alpha) << " }";
             return os;
         }
@@ -150,6 +150,16 @@ namespace tiny {
           }
 
         public:
+          std::string json() const {
+              std::stringstream ss;
+              ss << "{";
+              ss << "\"_tag\":"     << "\"tiny::image\",";
+              ss << "\"width\":"    << m_width  << ",";
+              ss << "\"height\":"   << m_height << ",";
+              ss << "\"channels\":" << m_channels;
+              ss << "}";
+              return ss.str();
+          }
           friend std::ostream &operator<<(std::ostream &os, image const& image) {
               os << "tiny::image {";
               os << " width: "    << image.m_width    << ",";

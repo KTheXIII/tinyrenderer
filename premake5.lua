@@ -1,4 +1,4 @@
-workspace 'cpp-premake-template'
+workspace 'tinyrenderer'
   configurations {
     'debug',
     'release'

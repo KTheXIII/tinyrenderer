@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "tiny.hpp"
+#include "nlohmann/json.hpp"
 
 tiny::color red(255, 0, 0);
 tiny::color green(0, 255, 0);
@@ -188,8 +189,12 @@ int32_t main(int32_t argc, char const *argv[]) {
     image.write_png("lesson2.png");
 
     // std::cout << model << "\n";
+
+    using json = nlohmann::json;
+    auto wow = json::parse(image.json());
+
     std::cout << image.get_color(10, 10) << '\n';
-    std::cout << image << "\n";
+    std::cout << wow.dump(2) << "\n";
     return 0;
 }
 

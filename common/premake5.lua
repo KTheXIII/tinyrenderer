@@ -13,6 +13,9 @@ project "common"
   files {
     "include/**.h",
     "include/**.hpp",
+
+    "vendor/**.h",
+    "vendor/**.hpp",
   }
 
   includedirs {
