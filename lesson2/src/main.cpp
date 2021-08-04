@@ -158,6 +158,50 @@ void triangle_5(tiny::vec2<int32_t> t0, tiny::vec2<int32_t> t1,
     }
 }
 
+void line_1(tiny::vec2<int32_t> p0, tiny::vec2<int32_t> p1,
+            tiny::image &image, tiny::color const& color) {
+    bool steep = false;
+    if (std::abs(p0.x - p1.x) < std::abs(p0.y - p1.y)) {
+        std::swap(p0.x, p0.y);
+        std::swap(p1.x, p1.y);
+        steep = true;
+    }
+    if (p0.x > p1.x)
+        std::swap(p0, p1);
+
+    for (int32_t x = p0.x; x <= p1.x; x++) {
+        auto t = (float)(x - p0.x) / (float)(p1.x - p0.x);
+        auto y = (int32_t)(p0.y * (1. - t) + p1.y * t);
+        if (steep)
+            image.set(y, x, color);
+        else
+            image.set(x, y, color);
+    }
+
+}
+
+void triangle_6(tiny::vec2<int32_t> t0, tiny::vec2<int32_t> t1,
+              tiny::vec2<int32_t> t2, tiny::image &image,
+              tiny::color const &color) {
+    if (t0.y == t1.y && t0.y == t2.y) return;
+    if (t0.y > t1.y) std::swap(t0, t1);
+    if (t0.y > t2.y) std::swap(t0, t2);
+    if (t1.y > t2.y) std::swap(t1, t2);
+    int32_t total_height = t2.y - t0.y;
+    for (int32_t i = 0; i < total_height; i++) {
+        bool second_half = i > t1.y - t0.y || t1.y == t0.y;
+        int32_t segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
+        float alpha = (float)i / (float)total_height;
+        float beta  = (float)(i - (second_half ? t1.y - t0.y : 0))
+                      / segment_height;
+        tiny::vec2<int32_t> A = t0 + (t2 - t0) * alpha;
+        tiny::vec2<int32_t> B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+        if (A.x > B.x) std::swap(A, B);
+        for (int32_t j = A.x; j <= B.x; j++)
+            image.set(j, t0.y + i, color);
+    }
+}
+
 tiny::vec3<float> barycentric(std::array<tiny::vec2<int32_t>, 3> const& pts,
                               tiny::vec2<int32_t> const& P) {
     tiny::vec3<float> u = tiny::math::cross<float>(
@@ -203,12 +247,12 @@ void triangle(std::array<tiny::vec2<int32_t>, 3> const& pts, tiny::image &image,
 }
 
 int32_t main(int32_t argc, char const *argv[]) {
-    constexpr int32_t WIDTH  = 512;
-    constexpr int32_t HEIGHT = 512;
+    constexpr int32_t WIDTH  = 800;
+    constexpr int32_t HEIGHT = 800;
 
     tiny::image image(WIDTH, HEIGHT);
-    tiny::model model("assets/suzanne.obj");
-    // tiny::model model("assets/african_head.obj");
+    //tiny::model model("assets/suzanne.obj");
+    tiny::model model("assets/african_head.obj");
     tiny::vec3<float> light_dir{ 0, 0, -1 };
 
     for (int32_t i = 0; i < model.nfaces(); i++) {
@@ -230,7 +274,7 @@ int32_t main(int32_t argc, char const *argv[]) {
         n = tiny::math::normalise(n);
         auto intensity = n * light_dir;
         if (intensity > 0)
-            triangle_3(screen_coords[0], screen_coords[1], screen_coords[2],
+            triangle_5(screen_coords[0], screen_coords[1], screen_coords[2],
                        image,
                        tiny::color(
                            uint8_t(intensity * 255.),

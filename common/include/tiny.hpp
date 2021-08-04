@@ -27,6 +27,24 @@ struct vec2 {
         };
         T raw[2];
     };
+    vec2<T> operator+(vec2<T> const& rhs) const {
+        return vec2<T>{x + rhs.x, y + rhs.y};
+    }
+    vec2<T> operator+(T const& rhs) const {
+        return vec2<T>{x + rhs, y + rhs};
+    }
+    vec2<T> operator-(vec2<T> const& rhs) const {
+        return vec2<T>{x - rhs.x, y - rhs.y};
+    }
+    vec2<T> operator-(T const& rhs) const {
+        return vec2<T>{x - rhs, y - rhs};
+    }
+    vec2<T> operator*(vec2<T> const& rhs) const {
+        return vec2<T>{x * rhs.x, y * rhs.y};
+    }
+    vec2<T> operator*(T const& rhs) const {
+        return vec2<T>{x * rhs, y * rhs};
+    }
 };
 
 template <typename T>
@@ -75,7 +93,7 @@ vec3<T> cross(vec3<T> const& a, vec3<T> const& b) {
 
 template <typename T>
 T magnitude(vec3<T> const& v) {
-    return std::sqrt(std::pow(v.x, 2.) + std::pow(v.y, 2.) + std::pow(v.z, 2.));
+    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 template <typename T>
